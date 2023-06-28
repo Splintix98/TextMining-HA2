@@ -69,4 +69,5 @@ class Data(Dataset):
         sentence_tnsr = torch.LongTensor([word2index[w] for w in self.data[index].sentence]).to(dev)
         inference_tnsr = torch.LongTensor([word2index[w] for w in self.data[index].inference]).to(dev)
         label_tnsr = torch.FloatTensor([int(self.data[index].label)]).to(dev)
+        print(sentence_tnsr.shape, inference_tnsr.shape, label_tnsr.shape)
         return sentence_tnsr, inference_tnsr, label_tnsr

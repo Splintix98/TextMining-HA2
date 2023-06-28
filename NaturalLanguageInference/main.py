@@ -16,9 +16,9 @@ from tqdm import tqdm
 
 
 if __name__ == '__main__':
-    train_data = utils.get_data('NaturalLanguageInference/WNLI/train.tsv')
-    val_data = utils.get_data('NaturalLanguageInference/WNLI/dev.tsv')
-    test_data = utils.get_data('NaturalLanguageInference/WNLI/test.tsv')   
+    train_data = utils.get_data('WNLI/train.tsv')
+    val_data = utils.get_data('WNLI/dev.tsv')
+    test_data = utils.get_data('WNLI/test.tsv')   
     
     utils.build_word2index()
     

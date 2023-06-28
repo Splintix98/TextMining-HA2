@@ -10,6 +10,7 @@ class RNN_model(nn.Module):
         self.emb_dim = emb_dim
         self.emb = nn.Embedding(self.vocab_size, self.emb_dim, padding_idx=0, device=dev)
         self.rnn = nn.RNN(self.emb_dim, self.hidden_size, num_layers=10) # input_dimension, hidden_dimension
+        # self.rnn = nn.LSTM(self.hidden_size, self.hidden_size, num_layers=10, batch_first=True)
         self.lin = nn.Linear(self.hidden_size, self.vocab_size, device=dev)
         self.relu = nn.ReLU()
         self.fc = nn.Linear(hidden_size, 1, device=dev)
