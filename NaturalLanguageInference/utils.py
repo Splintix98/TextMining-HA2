@@ -20,6 +20,7 @@ vocab = Counter()
 word2index = {}
 index2word = {}
 
+
 def get_data(fname):
     data:list[WNLI_Item] = []
     with open(fname) as fs:
@@ -42,7 +43,13 @@ def normalize_sent(sent):
     puncts = string.punctuation
 
     normalized_sentence = [word.lower() for word in sent if word not in puncts and word.lower() not in s_words]
-    return normalized_sentence
+    new_norm_sentence = []
+    for word in normalized_sentence:
+        for char in word:
+            if char in puncts:
+                word = word.replace(char, '')
+        new_norm_sentence.append(word)
+    return new_norm_sentence
 
 # adds words of current sentence to vocab
 def add_sent_to_vocab(sent):        
@@ -61,13 +68,31 @@ def build_word2index():
 class Data(Dataset):
     def __init__(self, data):
         self.data = data
+        self.sentences = [d.sentence for d in data]
+        self.inferences = [d.inference for d in data]
+        self.labels = [d.label for d in data]
+        self.max_len = max([len(s) for s in self.sentences])
     
     def __len__(self):
         return len(self.data)
     
     def __getitem__(self, index):
-        sentence_tnsr = torch.LongTensor([word2index[w] for w in self.data[index].sentence]).to(dev)
-        inference_tnsr = torch.LongTensor([word2index[w] for w in self.data[index].inference]).to(dev)
-        label_tnsr = torch.FloatTensor([int(self.data[index].label)]).to(dev)
-        print(sentence_tnsr.shape, inference_tnsr.shape, label_tnsr.shape)
+        sentence = [word2index[w] for w in self.data[index].sentence]
+        inference = [word2index[w] for w in self.data[index].inference]
+        label = self.data[index].label
+        
+        if len(sentence)>self.max_len:
+            sentence = sentence[:self.max_len]
+        else:
+            sentence.extend([0 for _ in range(self.max_len-len(sentence))])
+            
+        if len(inference)>self.max_len:
+            inference = inference[:self.max_len]
+        else:
+            inference.extend([0 for _ in range(self.max_len-len(inference))])
+        
+        sentence_tnsr = torch.LongTensor(sentence).to(dev)
+        inference_tnsr = torch.LongTensor(inference).to(dev)
+        label_tnsr = torch.LongTensor([int(self.data[index].label)]).to(dev)
+        #print(sentence_tnsr.shape, inference_tnsr.shape, label_tnsr.shape)
         return sentence_tnsr, inference_tnsr, label_tnsr
