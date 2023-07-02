@@ -46,4 +46,4 @@ class RNN_model(nn.Module):
         output = self.fc2(output)
         output = self.relu(output)
         output = self.fc3(output)
-        return output
+        return output 

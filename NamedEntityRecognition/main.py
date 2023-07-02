@@ -32,10 +32,11 @@ def train(lm_model, train_loader, val_loader, epochs):
     lm_model.train()
     max_val_accuracy = 0
     criterion = nn.CrossEntropyLoss()
-    optimizer = Adam(lm_model.parameters(), lr=0.000001)
+    optimizer = Adam(lm_model.parameters(), lr=0.0001)
     for e in range(epochs):
-        for sents, infs, labels in tqdm(train_loader):
-            out = lm_model(sents, infs)    
+        for sent, labels in tqdm(train_loader):
+            sent = sent.squeeze(0)            
+            out = lm_model(sent)    
             loss = criterion(out, labels.reshape(-1))
             optimizer.zero_grad()
             loss.backward()
@@ -51,18 +52,19 @@ def train(lm_model, train_loader, val_loader, epochs):
     return max_val_accuracy
 
 if __name__ == '__main__':
-    train_data = utils.get_data('NaturalLanguageInference/WNLI/train.tsv')
-    val_data = utils.get_data('NaturalLanguageInference/WNLI/dev.tsv')  
-    test_data = utils.get_data('NaturalLanguageInference/WNLI/test.tsv')     
+    train_data = utils.get_data('NamedEntityRecognition/conll2003_train.pkl')
+    val_data = utils.get_data('NamedEntityRecognition/conll2003_val.pkl')  
+    test_data = utils.get_data('NamedEntityRecognition/conll2003_test.pkl')     
     
     utils.build_word2index()
     
     vocab_size = len(utils.vocab)
+    max_len = utils.max_len
     emb_dim = 100
     hidden_size = 128
-    batch_size = 64
+    batch_size = 1
     num_layers = 3
-    model = RNN_model(vocab_size, emb_dim, hidden_size, batch_size, num_layers).to(utils.dev)
+    model = RNN_model(vocab_size, emb_dim, hidden_size, max_len, batch_size, num_layers).to(utils.dev)
     
     # Prepare datasets and dataloaders
     train_dataset = Data(train_data)
