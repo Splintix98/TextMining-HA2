@@ -16,11 +16,8 @@ class RNN_model(nn.Module):
         self.max_len = max_len
         self.emb = nn.Embedding(self.vocab_size+1, self.emb_dim, padding_idx=0, device=dev)
         self.rnn = nn.RNN(self.emb_dim, self.hidden_size, self.num_layers) # input_dimension, hidden_dimension
-        # self.rnn = nn.LSTM(self.hidden_size, self.hidden_size, num_layers=10, batch_first=True)
-        # self.lin = nn.Linear(self.hidden_size, self.vocab_size, device=dev)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(self.hidden_size, 9, device=dev)
-        self.softmax = nn.Softmax(dim=0)
         self.init_weights()
     
     def init_weights(self):
@@ -29,20 +26,14 @@ class RNN_model(nn.Module):
                 init.xavier_normal_(param)
     
     def forward(self, sentence):
-        #batch_size = sentence.shape[0]
         inp = self.emb(sentence)
-        #inp = inp.permute(1, 0, 2)
         h_0 = torch.rand(self.num_layers, self.hidden_size).to(dev)
-        all_hidden_states, last_hidden_state = self.rnn(inp, h_0)
-        #all_hidden_states_perm = all_hidden_states.permute(1, 0, 2)
-        #sliced_tensor = all_hidden_states_perm[:, -128:].unsqueeze(-2)
+        all_hidden_states, _ = self.rnn(inp, h_0)
 
-        probabilities = []
-        for word in all_hidden_states:
-            word = self.fc1(word)
-            word = self.relu(word)
-            word = self.softmax(word)
-            probabilities.append(torch.argmax(word, dim=0))
-    
-        output = torch.stack(probabilities)      
-        return output 
+        logits = self.fc1(all_hidden_states)
+        logits = self.relu(logits)
+        log_probs = torch.log_softmax(logits, dim=1) #e.g. [10,9] 10 words, 9 classes.
+        #Can be passed as is to NLLLoss criterion.
+        #log_softmax is used to avoid underflow/overflow.
+
+        return log_probs
