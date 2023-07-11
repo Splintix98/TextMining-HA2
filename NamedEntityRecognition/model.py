@@ -15,16 +15,17 @@ class RNN_model(nn.Module):
         self.emb_dim = emb_dim
         self.max_len = max_len
         self.emb = nn.Embedding(self.vocab_size+1, self.emb_dim, padding_idx=0, device=dev)
-        self.rnn = nn.RNN(self.emb_dim, self.hidden_size, self.num_layers) # input_dimension, hidden_dimension
+        # input_dimension, hidden_dimension
+        self.rnn = nn.RNN(self.emb_dim, self.hidden_size, self.num_layers)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(self.hidden_size, 9, device=dev)
         self.init_weights()
-    
+
     def init_weights(self):
         for name, param in self.named_parameters():
             if 'weight' in name:
                 init.xavier_normal_(param)
-    
+
     def forward(self, sentence):
         inp = self.emb(sentence)
         h_0 = torch.rand(self.num_layers, self.hidden_size).to(dev)
@@ -32,8 +33,9 @@ class RNN_model(nn.Module):
 
         logits = self.fc1(all_hidden_states)
         logits = self.relu(logits)
-        log_probs = torch.log_softmax(logits, dim=1) #e.g. [10,9] 10 words, 9 classes.
-        #Can be passed as is to NLLLoss criterion.
-        #log_softmax is used to avoid underflow/overflow.
+        # e.g. [10,9] 10 words, 9 classes.
+        log_probs = torch.log_softmax(logits, dim=1)
+        # Can be passed as is to NLLLoss criterion.
+        # log_softmax is used to avoid underflow/overflow.
 
         return log_probs
