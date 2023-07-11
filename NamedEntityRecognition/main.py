@@ -79,7 +79,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
 
-    max_val_accuracy = train(model, train_loader, val_loader, epochs=1)
+    max_val_accuracy = train(model, train_loader, val_loader, epochs=5)
 
     print(f"max_val_accuracy: {max_val_accuracy}")
     with open('NER_best_params.pkl', 'wb') as f:
