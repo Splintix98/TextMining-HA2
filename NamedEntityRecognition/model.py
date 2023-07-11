@@ -32,10 +32,6 @@ class RNN_model(nn.Module):
         all_hidden_states, _ = self.rnn(inp, h_0)
 
         logits = self.fc1(all_hidden_states)
-        logits = self.relu(logits)
-        # e.g. [10,9] 10 words, 9 classes.
-        log_probs = torch.log_softmax(logits, dim=1)
-        # Can be passed as is to NLLLoss criterion.
-        # log_softmax is used to avoid underflow/overflow.
+        logits = self.relu(logits)        
 
-        return log_probs
+        return logits

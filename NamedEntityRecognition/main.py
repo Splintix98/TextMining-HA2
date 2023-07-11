@@ -34,7 +34,7 @@ def validate(lm_model, val_loader):
 def train(lm_model, train_loader, val_loader, epochs):
     lm_model.train()
     max_val_accuracy = 0
-    criterion = nn.NLLLoss()
+    criterion = nn.CrossEntropyLoss()
     optimizer = Adam(lm_model.parameters(), lr=0.0001)
 
     for e in range(epochs):

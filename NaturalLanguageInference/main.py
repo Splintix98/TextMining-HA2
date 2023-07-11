@@ -65,9 +65,9 @@ if __name__ == '__main__':
 
     vocab_size = len(utils.vocab)
     emb_dim = 100
-    hidden_size = 128
-    batch_size = 64
-    num_layers = 3
+    hidden_size = 64
+    batch_size = 32
+    num_layers = 1
     model = RNN_model(vocab_size, emb_dim, hidden_size, batch_size, num_layers).to(utils.dev)
 
     # Prepare datasets and dataloaders
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
 
-    max_val_accuracy = train(model, train_loader, val_loader, epochs=200)
+    max_val_accuracy = train(model, train_loader, val_loader, epochs=100)
 
     print(f"max_val_accuracy: {max_val_accuracy}")
     with open('inference_best_params.pkl', 'wb') as f:

@@ -1,0 +1,34 @@
+Task 1 - Natural Language inference
+
+For this task, we used a custom variant of Siamese Networks, as an RNN model.
+We input the two sentences into the model, and the model outputs a vector of size 2, which represents the probability of the two sentences being equivalent or not.
+
+The two inputs, sentence and inference, are passed through the same RNN but in two different steps:
+First the sentence is passed through the forward method. For this, we use a random h_0 vector and we save the last hidden state after the model's forward pass.
+Then, the same happens for the inference.
+
+After the two forward passes, we concatenate the two last hidden states.
+For example, if the hidden state has the shape (32, 12, 512) (batch_size, num_layers, hidden layer size) after concatenation it becomes (32, 6144).
+
+We then pass the concatanated tensor to 3 linear layers and the last layer outputs two unormalized logits,
+which represent the unnormalized probability for each class (0 or 1).
+
+Initially, we used a much bigger network (multiple layers stacked and big hidden size) but after some small discussion
+with colleagues, we decided to make the architecture smaller, eventually achieving much better results (65%) on the test set.
+
+
+Insipration for the use of Siamese Networks: https://doi.org/10.48550/arXiv.2201.04810
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Task 2 - Named Entity Recognition
+
+For this task, we used a simple Multiclass Classification architecture together with a traditional RNN.
+
+First, we pass the sentence through the RNN network and after it we use a single linear layer for the classification.
+The linear layer has the shape (hidden_size, 9), because for each word, we want to predict one of the 9 NER labels.
+
+We achieved 91% accuracy on the test set.
+
+
+
