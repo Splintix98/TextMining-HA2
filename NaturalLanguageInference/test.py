@@ -8,13 +8,13 @@ import numpy as np
 
 
 with open('inference_best_params.pkl', 'rb') as f:
-    vocab, vocab_size, emb_dim, hidden_size, batch_size, num_layers, max_val_accuracy = pickle.load(f)  
+    vocab, vocab_size, emb_dim, hidden_size, batch_size, num_layers, max_val_accuracy = pickle.load(f)
 
 utils.word2index = vocab
-test_data = utils.get_data('NaturalLanguageInference/WNLI/test.tsv')  
-test_dataset = utils.Data(test_data)    
+test_data = utils.get_data('NaturalLanguageInference/WNLI/test.tsv')
+test_dataset = utils.Data(test_data)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
-      
+
 
 acc = []
 runs = 100
